@@ -13,17 +13,17 @@ router.get("/", (req, res) => {
     page = pageNum;
   }
 
-  let size = 2;
-  if(!Number.isNaN(sizeNum) && sizeNum > 0  && sizeNum < 4){
-    size = sizeNum;   //valida que sea mayor a cero y menor a sizeNum
-  }
+  let size = 11;
+  if(!Number.isNaN(sizeNum) && sizeNum > 0  && sizeNum < 11){
+    size = sizeNum;   //valida que sea mayor a cero y menor a sizeNum, muestra por defecto 2 si no
+  }                   // defino ningun page y size  
     
   models.carrera.findAndCountAll({
     attributes: ["id", "nombre","id_facultad"],
     include:[{as:'Facultad-Relacionada', model:models.facultad, attributes: ["id","nombre"]}],
     limit: size,
-    offset: page * size
-  })
+    offset: page * size           //es el valor para el punto de partida del resultado
+  })                              // si no esta definido muestra los 2 primero valores 
     
     .then(carreras => res.send({
         carreras: carreras.rows,

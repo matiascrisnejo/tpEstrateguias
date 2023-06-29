@@ -22,10 +22,10 @@ router.get("/", (req, res) => {
 
   let page = 0;
   if(!Number.isNaN(pageNum) && pageNum > 0){  //valida que sea mayor a cero
-    page = pageNum;
-  }
+    page = pageNum;     //valida que sea mayor a cero y menor a sizeNum, muestra por defecto 3 si no
+  }                     // defino ningun page y size
 
-  let size = 2;
+  let size = 3;
   if(!Number.isNaN(sizeNum) && sizeNum > 0  && sizeNum < 11){
     size = sizeNum;   //valida que sea mayor a cero y menor a sizeNum
   }
@@ -35,8 +35,8 @@ router.get("/", (req, res) => {
     include:[{as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}],
     include:[{as:'profesor', model:models.profesor, attributes: ["id","nombre","apellido","email"]}],
     limit: size,
-    offset: page * size
-  })
+    offset: page * size         //es el valor para el punto de partida del resultado
+  })                            // si no esta definido muestra los 3 primero valores
     
     .then(materias => res.send({
         materias: materias.rows,
