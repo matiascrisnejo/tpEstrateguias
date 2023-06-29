@@ -7,6 +7,8 @@ var carrerasRouter = require('./routes/carreras');
 var materiasRouter = require('./routes/materias');
 var facultadesRouter = require('./routes/facultades');
 var profesoresRouter = require('./routes/profesores');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger');
 
 
 var app = express();
@@ -20,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 app.use('/car', carrerasRouter);

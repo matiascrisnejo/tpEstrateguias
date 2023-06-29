@@ -15,6 +15,72 @@ var models = require("../models");
 //     }).then(materias => res.send(materias)).catch(error => { return next(error)});
 // });
 
+/**
+ * @swagger
+ * /materia:
+ *   get:
+ *     summary: Obtiene todas las materias
+ *     tags:
+ *       - Materias
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 3
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 materias:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       id_carrera:
+ *                         type: integer
+ *                         description: ID de la carrera
+ *                       profesor:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             description: ID de la materia
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre del profesor
+ *                           apellido:
+ *                             type: string
+ *                             description: Apellido del profesor
+ *                           email:
+ *                             type: string
+ *                             description: Email del profesor
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Número total de páginas
+ *       500:
+ *         description: Error interno del servidor
+ */
+
 router.get("/", (req, res) => {
   
   const pageNum = Number.parseInt(req.query.page);    //verifica que sean numeros evitando el ingreso de texto
@@ -46,7 +112,48 @@ router.get("/", (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 
-
+/**
+ * @swagger
+ * /materia:
+ *   post:
+ *     summary: Se crea una nueva materia
+ *     tags: [Materias]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la materia
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la materia
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       500:
+ *         description: Error interno del servidor
+ */
 
 router.post("/", (req, res) => {
   models.materia
@@ -73,6 +180,44 @@ const findmateria = (id, { onSuccess, onNotFound, onError }) => {
     .catch(() => onError());
 };
 
+/**
+ * @swagger
+ * /materia/{id}:
+ *   get:
+ *     summary: Obtiene la materia identificada con ID  indicado
+ *     tags:
+ *       - Materias
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       id_carrera:
+ *                         type: integer
+ *                         description: ID de la carrera
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+
 router.get("/:id", (req, res) => {
   findmateria(req.params.id, {
     onSuccess: materia => res.send(materia),
@@ -80,6 +225,50 @@ router.get("/:id", (req, res) => {
     onError: () => res.sendStatus(500)
   });
 });
+
+/**
+ * @swagger
+ * /materia/{id}:
+ *   put:
+ *     summary: Actualiza materia por su Id
+ *     tags:
+ *       - Materias
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Id de la materia a actualizar
+ *         required: true
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la materia
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 
 router.put("/:id", (req, res) => {
   const onSuccess = materia =>
@@ -101,6 +290,29 @@ router.put("/:id", (req, res) => {
     onError: () => res.sendStatus(500)
   });
 });
+
+/**
+ * @swagger
+ * /materia/{id}:
+ *   delete:
+ *     summary: Elimina materia por su Id
+ *     tags: [Materias]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 
 router.delete("/:id", (req, res) => {
   const onSuccess = materia =>
