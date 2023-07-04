@@ -1,0 +1,4 @@
+npm i swagger-jsdoc
+npm i swagger-ui-express
+npm start
+http://localhost:3001/api/
